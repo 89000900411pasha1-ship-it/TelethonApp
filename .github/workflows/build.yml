@@ -22,16 +22,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller customtkinter telethon
 
-    - name: 4. Download and Extract sqlite3.dll
-      run: |
-        curl -L -o sqlite3.dll.zip https://www.sqlite.org/2024/sqlite-dll-win64-x64-3460000.zip
-        7z x sqlite3.dll.zip  # Просто распаковываем, файл появится в корне
-        del sqlite3.dll.zip   # Удаляем архив
+    # Шаг 4 (скачивание) больше не нужен, так как файл уже в репозитории
 
-    - name: 5. Run the build script
-      run: python build.py
+    - name: 4. Run the build script
+      run: python build.py # Наш build.py уже умеет находить sqlite3.dll в папке
 
-    - name: 6. Upload artifact
+    - name: 5. Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: TelethonManager-Windows
