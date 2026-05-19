@@ -10,10 +10,10 @@ jobs:
 
     steps:
     - name: 1. Checkout repository
-      uses: actions/checkout@v4 # Обновлено до v4
+      uses: actions/checkout@v4
 
     - name: 2. Set up Python
-      uses: actions/setup-python@v5 # Обновлено до v5
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -22,19 +22,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller customtkinter telethon
 
-    - name: 4. Download sqlite3.dll
+    - name: 4. Download and Extract sqlite3.dll
       run: |
         curl -L -o sqlite3.dll.zip https://www.sqlite.org/2024/sqlite-dll-win64-x64-3460000.zip
-        7z x sqlite3.dll.zip
-        del sqlite3.dll.zip
-        # Перемещаем dll в корень, чтобы build.py ее нашел
-        move sqlite-dll-win64-x64-3460000/sqlite3.dll .
+        7z x sqlite3.dll.zip  # Просто распаковываем, файл появится в корне
+        del sqlite3.dll.zip   # Удаляем архив
 
     - name: 5. Run the build script
       run: python build.py
 
     - name: 6. Upload artifact
-      uses: actions/upload-artifact@v4 # <-- ГЛАВНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ: v3 заменено на v4
+      uses: actions/upload-artifact@v4
       with:
         name: TelethonManager-Windows
         path: TelethonManager_v1.6.0/
