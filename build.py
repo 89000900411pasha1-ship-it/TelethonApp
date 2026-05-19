@@ -8,34 +8,19 @@ import sys
 # --- Конфигурация ---
 APP_NAME = "TelethonManager"
 MAIN_SCRIPT = "gui_app.py"
-ICON_FILE = "icon.ico"
 APP_VERSION = "1.6.0"
 DIST_FOLDER = f"{APP_NAME}_v{APP_VERSION}"
 MANUAL_DLL = "sqlite3.dll"
 
 # --- Содержимое README ---
-# Этот текст на русском, но он записывается в файл, а не выводится в консоль, поэтому он безопасен.
 README_CONTENT = f"""
 # {APP_NAME} v{APP_VERSION}
 
 Профессиональное десктопное приложение для автоматизированного управления и обработки аккаунтов Telegram.
-
----
-
-## Рабочий процесс
-
-1.  **Первый запуск:** Запустите `{APP_NAME}.exe`. Программа автоматически создаст все нужные файлы и папки.
-2.  **Настройка:**
-    - Поместите файлы `.session` в папку `sessions`.
-    - Отредактируйте `profile_data.csv`, добавив данные для ребрендинга.
-    - Используйте кнопки настроек в интерфейсе для конфигурации API, прокси, 2FA-паролей и ссылок.
-3.  **Проверка:** Нажмите **"🔎 ПРОВЕРКА"**. Рабочие сессии попадут в `checked_active`.
-4.  **Обработка:** Нажмите **"🚀 Обработать активные"**, чтобы взять в работу только проверенные аккаунты.
-5.  **Очистка:** Нажмите **"🗑️ Очистить папки"**, чтобы подготовиться к новой партии.
 """
 
 def main():
-    print(f"--- Starting build process for {APP_NAME} v{APP_VERSION} ---")
+    print(f"--- Starting build process for {APP_NAME} v{APP_VERSION} (no-icon mode) ---")
 
     # 1. Check for PyInstaller
     try:
@@ -50,9 +35,8 @@ def main():
     separator = ';' if sys.platform == 'win32' else ':'
     
     command = [
-        "pyinstaller", "--noconfirm", "--onefile", "--windowed",
-        "--clean", # Force cache clean
-        f"--name={APP_NAME}", f"--icon={ICON_FILE}",
+        "pyinstaller", "--noconfirm", "--onefile", "--windowed", "--clean",
+        f"--name={APP_NAME}",
         "--hidden-import=customtkinter", "--hidden-import=PIL", "--hidden-import=asyncio",
         f"--add-data=ru.json{separator}.", f"--add-data=en.json{separator}."
     ]
@@ -73,12 +57,8 @@ def main():
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8', errors='replace')
         stdout, stderr = process.communicate()
         if process.returncode != 0:
-            print("\n--- PYINSTALLER BUILD FAILED! ---")
-            print("--- STDOUT ---"); print(stdout)
-            print("--- STDERR ---"); print(stderr); sys.exit(1)
+            print("\n--- PYINSTALLER BUILD FAILED! ---"); print("--- STDOUT ---"); print(stdout); print("--- STDERR ---"); print(stderr); sys.exit(1)
         else:
-            print("--> Build process stdout:")
-            print(stdout)
             print("--> Build successful.")
     except Exception as e:
         print(f"\nCRITICAL ERROR during build execution: {e}"); sys.exit(1)
